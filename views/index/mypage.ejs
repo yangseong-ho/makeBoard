@@ -1,0 +1,387 @@
+<html>
+
+<head>
+    <title>
+        <%= title %>
+    </title>
+    <link href="https://fonts.googleapis.com/css?family=Ubuntu:300,300i,400,400i,500,500i,700,700i&display=swap" rel="stylesheet">
+
+    <link rel="stylesheet" href="vendors/fonts/font-awesome.min.css">
+    <link rel="stylesheet" href="vendors/fonts/line-awesome.css">
+    <link rel="stylesheet" href="vendors/fonts/SpoqaHanSans-kr.css">
+    <link rel="stylesheet" type="text/css" href="css/style.css">
+    <link rel="stylesheet" type="text/css" href="css/uc.min.css">
+    <script src="https://code.jquery.com/jquery-3.4.1.js" integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU=" crossorigin="anonymous"></script>
+    <script>
+        $(function() {
+            $("#ggChangeToGold").click(function(e) {
+                var communityType = $("select[name=communityType]").val();
+                var gg = $("input[name=gg]").val();
+                if (communityType == '') {
+                    return alert('커뮤니티를 선택해 주세요.');
+                }
+                $.ajax({
+                    url: 'http://localhost:8080/mypage/gold',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'communityType': communityType,
+                        'gg': gg
+                    },
+                    success: function(result) {
+                        if (result.result == 'success') {
+                            alert("성공");
+                            location.reload();
+                            // 새로고침, refresh
+                        } else if (result.result == 'fail') {
+                            alert("실패")
+                        } else {
+                            alert('오류가 생겼습니다.\n' +
+                                '잠시 후 이용해 주시기 바랍니다.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+
+            });
+            // changeBadge
+            $(".changeBadge").on('click', function(e) {
+                var selectBadgeSeq = $(this).prevAll('.currentBadgeSeq').val();
+                console.log('test');
+                console.log(selectBadgeSeq);
+                $.ajax({
+                    url: 'http://localhost:8080/mypage/changeBadge',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'selectBadgeSeq': selectBadgeSeq
+                    },
+                    success: function(result) {
+                        if (result.result == 'success') {
+                            alert("뱃지를 변경하였습니다.");
+                            location.reload();
+                            // 새로고침, refresh
+                        } else if (result.result == 'fail') {
+                            alert("변경 실패")
+                        } else {
+                            alert('오류가 생겼습니다.\n' +
+                                '잠시 후 이용해 주시기 바랍니다.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+            $(".buyBadge").on('click', function(e) {
+                var selectBadgeSeq = $(this).prevAll('.currentBadgeSeq').val();
+                var selectBadgePrice = $(this).prevAll('.currentBadgePrice').val();
+                $.ajax({
+                    url: 'http://localhost:8080/mypage/buyBadge',
+                    type: 'POST',
+                    dataType: 'json',
+                    data: {
+                        'badgeSeq': selectBadgeSeq,
+                        'badgePrice': selectBadgePrice
+                    },
+                    success: function(result) {
+                        if (result.result == 'success') {
+                            alert("구매 성공");
+                            location.reload();
+                            // 새로고침, refresh
+                        } else if (result.result == 'fail') {
+                            alert("구매 실패")
+                        } else if (result.result == 'already') {
+                            alert("구매한 뱃지 입니다.")
+                        } else {
+                            alert('오류가 생겼습니다.\n' +
+                                '잠시 후 이용해 주시기 바랍니다.');
+                        }
+                    },
+                    error: function(xhr, status, error) {
+                        alert(error);
+                    }
+                });
+            });
+        });
+    </script>
+</head>
+
+<body>
+    <% include ./header.ejs %>
+
+
+        <div class="container-frame is-pd-y_60">
+            <div data-uc-colgroup="row-md">
+                <div class="is-col-xs2">
+                    <% include ./left_side_logout.ejs %>
+                </div>
+                <div class="is-col-xs8">
+                    <div class="mypage-wrap">
+                        <h3>My Page</h3>
+                        <div data-uc-colgroup>
+                            <div class="is-col-xs4">
+                                <div class="is-col-xs6 is-align-mid">
+                                    <div class="is-avatar-wrap">
+                                        <img src="images/1 Main - medal/<%=img_src%>" alt="">
+                                    </div>
+                                </div>
+                                <div class="is-col-xs6 is-align-top user-info">
+                                    <!-- <p>슈퍼파월</p> -->
+                                    <h4>
+                                        <%= nickname%>
+                                    </h4>
+                                    <span>Since<%= created_at%></span>
+                                </div>
+                            </div>
+                            <div class="is-col-xs8">
+                                <div class="is-col-xs4 is-align-bot">
+                                    <div class="my-history">
+                                        <!--
+                                    <h4>My 활동이력</h4>
+                                    <p>Starcraft-KR Community Manager<br> ( 2019.08.20 ~ 2019.09.19 )</p>
+                                    <p>Starcraft-KR Community Manager<br> ( 2019.08.20 ~ 2019.09.19 )</p>
+                                    <p>Regam User<br> ( 2019.07.31 ~ )</p>
+-->
+                                    </div>
+                                </div>
+                                <div class="is-col-xs8 is-align-mid">
+                                    <ul>
+                                        <li>
+                                            <p class="is-level-icon">GG</p>
+                                            <p class="is-level-name">GG SUM</p>
+                                            <p class="is-level-score">
+                                                <%= sum_gg %>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p class="is-level-icon">R</p>
+                                            <p class="is-level-name">RGC</p>
+                                            <p class="is-level-score">
+                                                <%= rgc%>
+                                            </p>
+                                        </li>
+                                        <li>
+                                            <p class="is-level-icon">G</p>
+                                            <p class="is-level-name">GOLD</p>
+                                            <p class="is-level-score">
+                                                <%= gold%>
+                                            </p>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="badge-purcha-wrap">
+                        <div class="is-clearfix">
+                            <h3>훈장 구매하기</h3>
+                            <div class="is-option-wrap">
+                            </div>
+                        </div>
+                        <ul>
+
+                            <% for(var i=0, iter; iter = selectBadgeInfo[i]; ++i) {%>
+                                <li>
+                                    <div class="is-inner">
+                                        <span class="is-line"></span>
+                                        <div class="is-avatar-wrap"><img src="images/1 Main - medal/<%= iter.img_src%>" alt="" /></div>
+                                        <div class="is-not-hover">
+                                            <h4 class="is-title">
+                                                <%= iter.name%>
+                                            </h4>
+                                            <p class="is-coin-value"><span>G</span>
+                                                <%= iter.gold%>
+                                            </p>
+                                        </div>
+                                        <% for (var j=0, j_iter; j_iter = selectUserBadge[j]; ++j) {%>
+                                            <% if(iter.seq == j_iter.badge_seq) { %>
+                                                <div class="is-hover">
+                                                    <p class="is-coin-value">
+                                                        구매 완료
+                                                    </p>
+                                                    <input type="hidden" class="currentBadgeSeq" value="<%= iter.seq%>">
+                                                    <button class="changeBadge" type="button">착용하기</button>
+                                                </div>
+                                                <%break%>
+                                                    <%}%>
+                                                        <% if(j == selectUserBadge.length-1) {%>
+                                                            <div class="is-hover">
+                                                                <p class="is-coin-value"><span>G</span>
+                                                                    <%= iter.gold%>
+                                                                </p>
+                                                                <input type="hidden" class="currentBadgeSeq" value="<%= iter.seq%>">
+                                                                <input type="hidden" class="currentBadgePrice" value="<%= iter.gold%>">
+                                                                <button class="buyBadge" type="button">구매하기</button>
+                                                            </div>
+                                                            <%}%>
+                                                                <%}%>
+
+                                    </div>
+
+                                </li>
+                                <%}%>
+                        </ul>
+                    </div>
+
+                    <div class="send-paybox">
+                        <div class="is-col-xs4 is-align-top">
+                            <h4>GG 보유 내역</h4>
+                        </div>
+                        <% if (communityGG) { %>
+
+                            <table>
+                                <tbody>
+                                    <% for (var i in communityGG) { %>
+                                        <tr>
+
+                                            <th>
+                                                <%= communityGG[i].community_type%>
+                                            </th>
+                                            <td>
+                                                <%= communityGG[i].gg%>
+                                                    <strong>GG</strong>
+                                            </td>
+
+                                        </tr>
+                                        <%}%>
+                                </tbody>
+                            </table>
+                            <% } else {%>
+                                <h5>GG가 존재하지 않습니다.</h5>
+                                <% } %>
+                    </div>
+                    <div class="send-paybox">
+                        <div class="is-col-xs2 is-align-top">
+                            <h4>GG -> GOLD</h4>
+                        </div>
+                        <% if (communityGG) {%>
+                            <div class="is-col-xs4 is-align-bot">
+
+                                <select name="communityType">
+                                <option value="">Select Community</option>
+                                <% for (var i in communityGG) { %>
+                                <option value="<%= communityGG[i].community_type%>">
+                                    <%= communityGG[i].community_type%>
+                                </option>
+                                <%}%>
+                            </select>
+                                <input type="number" name="gg" value="" />
+                            </div>
+                            <div class="is-col-xs2 is-align-bot">
+                                <button id="ggChangeToGold" type="button">교환하기</button>
+                            </div>
+                            <%} else {%>
+                                <h5>GG가 존재 하지 않습니다.</h5>
+                                <%}%>
+                    </div>
+
+
+                    <!--
+                <div class="rgc-wallet-wrap">
+                    <h3>RGC Wallet</h3>
+                    <div data-uc-table>
+                        <h4>RGC 거래내역</h4>
+                        <table class="is-table-hor">
+                            <colgroup>
+                                <col width="10%" />
+                                <col width="12%" />
+                                <col width="19%" />
+                                <col width="19%" />
+                                <col width="15%" />
+                                <col width="15%" />
+                                <col width="10%" />
+                            </colgroup>
+                            <thead>
+                                <tr>
+                                    <th>STATE</th>
+                                    <th>AMOUNT</th>
+                                    <th>FROM</th>
+                                    <th>TO</th>
+                                    <th>RGC BALANCE</th>
+                                    <th>NOTE</th>
+                                    <th>DATE</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td>IN</td>
+                                    <td>+ 5,000</td>
+                                    <td>BAAAM
+                                        <span class="is-arrow-add"></span>
+                                    </td>
+                                    <td>ME / BigLight</td>
+                                    <td>50,000</td>
+                                    <td>PRIVACY</td>
+                                    <td>2019.08.20</td>
+                                </tr>
+                                <tr>
+                                    <td>OUT</td>
+                                    <td>- 3,000</td>
+                                    <td>ME / BigLight
+                                        <span class="is-arrow-add"></span>
+                                    </td>
+                                    <td>Henry.lee</td>
+                                    <td>50,000</td>
+                                    <td>PRIVACY</td>
+                                    <td>2019.08.20</td>
+                                </tr>
+                                <tr>
+                                    <td>OUT</td>
+                                    <td>- 4,000</td>
+                                    <td>ME / BigLight
+                                        <span class="is-arrow-add"></span>
+                                    </td>
+                                    <td>Henry.lee</td>
+                                    <td>50,000</td>
+                                    <td>PRIVACY</td>
+                                    <td>2019.08.20</td>
+                                </tr>
+                                <tr>
+                                    <td>OUT</td>
+                                    <td>- 4,000</td>
+                                    <td>ME / BigLight
+                                        <span class="is-arrow-add"></span>
+                                    </td>
+                                    <td>Henry.lee</td>
+                                    <td>50,000</td>
+                                    <td>PRIVACY</td>
+                                    <td>2019.08.20</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="send-paybox">
+                        <div class="is-col-xs2 is-align-top">
+                            <h4>RGC 거래내역</h4>
+                        </div>
+                        <div class="is-col-xs4 is-align-top">
+                            <label><i>1</i> 송금할 금액을 입력하세요.</label>
+                            <input type="text" name="" value="" />
+                        </div>
+                        <div class="is-col-xs4 is-align-top">
+                            <label><i>2</i> 받는 분의 회원ID를 입력하세요.</label>
+                            <input type="text" name="" value="" />
+                        </div>
+                        <div class="is-col-xs2 is-align-bot">
+                            <button type="button">송금하기</button>
+                        </div>
+                    </div>
+                </div>
+-->
+                </div>
+
+                <div class="is-col-xs2">
+                    <% include ./right_side.ejs %>
+                </div>
+            </div>
+        </div>
+
+
+        <% include ./footer.ejs %>
+</body>
+
+</html>

@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="board">
+
+    <select id="selectIndexBoardBest">
+        select a.*, img_src, nickname
+        from (
+            select *
+            from rg_board
+            where created_at >= #{createdAt}
+            union all
+            select *
+            from rg_info_board
+            where created_at >= #{createdAt}
+        ) a
+        join (
+            select a.*, b.img_src
+            from rg_user a
+            left join rg_badge_info b
+                on a.badge_seq = b.seq
+            where a.delete_yn = 'N'
+                and a.block_yn = 'N'
+        ) b
+            on a.uid = b.uid
+        order by like_cnt desc, a.created_at desc, a.seq
+        limit ${startIndex}, ${limitCnt}
+    </select>
+
+    <select id="selectIndexBoardNew">
+        select a.*, img_src, nickname
+        from (
+            select *
+            from rg_board
+            where created_at >= #{createdAt}
+            union all
+            select *
+            from rg_info_board
+            where created_at >= #{createdAt}
+        ) a
+        join (
+            select a.*, b.img_src
+            from rg_user a
+            left join rg_badge_info b
+                on a.badge_seq = b.seq
+            where a.delete_yn = 'N'
+                and a.block_yn = 'N'
+        ) b
+        on a.uid = b.uid
+        order by a.created_at desc, a.seq
+        limit ${startIndex}, ${limitCnt}
+    </select>
+
+    <select id="selectContentWhereId">
+        select title, content, a.created_at, a.updated_at, nickname from(
+            (select * from rg_board where seq = ${seq}) a
+            join
+            (select * from rg_user) b
+            on a.uid = b.uid
+        )
+    </select>
+
+    <select id="selectComment">
+        select b.content, b.created_at, b.updated_at, b.like_cnt, nickname from(
+            (select * from rg_board where seq = ${seq}) a
+            join
+            (select * from rg_board_comment) b
+            on a.seq = b.${board_seq}
+            join
+            (select * from rg_user) c
+            on b.uid = c.uid
+        )
+    </select>
+
+
+</mapper>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="badge">
+
+    <select id="selectUserBadge">
+        select badge_seq, created_at, b.name, b.gold
+        from rg_badge a
+        left join (
+            select seq, name, gold
+            from rg_badge_info
+        ) b
+            on a.badge_seq = b.seq
+        where uid = #{uid}
+            and delete_yn = 'N'
+    </select>
+    <insert id="insertUserBadge">
+        insert into rg_badge(uid, badge_seq, created_at)
+        values(#{uid}, #{badge_seq}, #{created_at})
+    </insert>
+    
+</mapper>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="badge_info">
+
+    <select id="selectBadgeInfoAll">
+        select img_src, name, gold, seq
+        from rg_badge_info
+        where delete_yn = 'N'
+    </select>
+    <select id="selectBadgeInfo">
+        select img_src, gold
+        from rg_badge_info
+        where seq = #{seq}
+            and delete_yn = 'N'
+    </select>
+    
+</mapper>

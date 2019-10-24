@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="community">
+
+    <select id="selectCommunityTop">
+        select a.*
+        from rg_community a
+        left join(
+            select community_type, count(*) + sum(like_cnt) as rank_cnt
+            from rg_board
+            group by community_type
+        ) b
+            on a.community_type = b.community_type
+        order by rank_cnt desc, created_at, seq
+        limit 0, ${limitCnt}
+    </select>
+
+    <select id="selectCommunityNew">
+        select *
+        from rg_community
+        where created_at >= #{createdAt}
+        order by created_at desc
+        limit 0, ${limitCnt}
+    </select>
+
+</mapper>

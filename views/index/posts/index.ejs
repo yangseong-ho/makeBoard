@@ -1,0 +1,124 @@
+<html>
+
+<% include ../common/head.ejs %>
+
+<body>
+    <% include ../common/header.ejs %>
+
+    <div class="is-col-xs2">
+        <% include ../common/left_side.ejs %>
+    </div>
+    <div class="container post post-index">
+    <div class="is-col-xs8">
+      <div data-uc-colgroup="row-sm">
+          <div class="is-col-xs4">
+              <table class="table table-striped posts" id="posts">
+                  <thead>
+                    <tr>
+                      <th class="seq">번호</th>
+                      <th class="community_type">커뮤니티</th>
+                      <th class="title">제목</th>
+                      <th class="author">작성자</th>
+                      <th class="date">날짜</th>
+                      <th class="view_cnt">조회</th>
+                      <th class="like_cnt">추천</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <% if(posts == null || posts.length == 0){ %>
+                      <tr>
+                        <td class="noData" colspan=100> There is no data to show :( </td>
+                      </tr>
+                    <% } %>
+                    <% posts.forEach(function(post) { %>
+                      <tr>
+                        <td class="seq">
+                          <%= post.seq %>
+                        </td>
+                        <td class="community_type">
+                          <%= post.community_type %>
+                        </td>
+                        <td class="title">
+                          <a href="/posts/<%= post.seq %>"><div class="ellipsis"><%= post.title %>  [<%= post.comment_cnt %>] </div></a>
+                        </td>
+                        <td class="author">
+                          <div class="ellipsis"> <%= post.nickname %> </div>
+                        </td>
+                        <td class="date">
+                          <%= post.created_at %>
+                        </td>
+                        <td class="view_cnt">
+                          <%= post.view_cnt %>
+                        </td>
+                        <td class="like_cnt">
+                          <%= post.like_cnt %>
+                        </td>
+                      </tr>
+                    <% }) %>
+                  </tbody>
+              </table>
+              <button id="more">더 보기</button>
+              
+          </div>
+      </div>
+    </div>
+    </div>
+
+    
+
+    <script>
+      $(function(){
+        var url = window.location.href;
+        var n = 2
+        $("#more").on('click',function(){
+            $.ajax({
+                url: url,
+                type:"POST",
+                dataType: 'json',
+                data : {'num' : n++},
+                success: function(result){
+                    posts = result.result;
+                    var appendHtml = '';
+                    posts.forEach(function(post) {
+                      appendHtml += 
+                      `<tr>
+                        <td class="seq">
+                          ${post.seq}
+                        </td>
+                        <td class="community_type">
+                          ${post.community_type}
+                        </td>
+                        <td class="title">
+                          <a href="/posts/${post.seq}"><div class="ellipsis">${post.title}  [${post.comment_cnt}] </div></a>
+                        </td>
+                        <td class="author">
+                          <div class="ellipsis"> ${post.nickname} </div>
+                        </td>
+                        <td class="date">
+                          ${post.created_at}
+                        </td>
+                        <td class="view_cnt">
+                          ${post.view_cnt}
+                        </td>
+                        <td class="like_cnt">
+                          ${post.like_cnt}
+                        </td>
+                        </tr>`;
+                    })
+                    $('#posts').append(appendHtml)
+                },
+                error: function(xhr, status, error) {
+                    alert(error);
+                }
+            });
+        });
+      });
+    </script>
+
+    <div class="is-col-xs2">
+        <% include ../common/right_side.ejs %>
+    </div>
+
+    <% include ../common/footer.ejs %>
+</body>
+</html>

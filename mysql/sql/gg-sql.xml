@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="gg">
+
+    <select id="selectUserGG">
+        select *
+        from rg_gg
+        where uid = #{uid}
+    </select>
+
+    <select id="selectCommunityGG">
+        select gg
+        from rg_gg a
+        left join (
+            select community_type, delete_yn
+            from rg_community
+        ) b
+            on a.community_type = b.community_type
+        where uid = #{uid}
+            and a.community_type = #{community_type}
+            and delete_yn = 'N'
+    </select>
+
+    <update id="updateCommunityGG">
+        update rg_gg
+        set gg = #{gg}, updated_at = #{updated_at}
+        where uid = #{uid}
+            and community_type = #{community_type}
+    </update>
+    
+</mapper>

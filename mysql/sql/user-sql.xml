@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="user">
+
+    <select id="selectUserId">
+        select a.*, if(b.sum_gg is null, 0, sum_gg) as sum_gg, c.img_src
+        from rg_user a
+        left join (
+            select uid, sum(gg) as sum_gg
+            from rg_gg
+            group by uid
+        ) b
+            on a.uid = b.uid
+        left join rg_badge_info c
+            on a.badge_seq = c.seq
+        where id = #{id}
+            and a.delete_yn = 'N'
+            and a.block_yn = 'N'
+    </select>
+
+    <select id="selectUserIdPw">
+        select a.*, if(b.sum_gg is null, 0, sum_gg) as sum_gg, c.img_src
+        from rg_user a
+        left join (
+            select uid, sum(gg) as sum_gg
+            from rg_gg
+            group by uid
+        ) b
+            on a.uid = b.uid
+        left join rg_badge_info c
+            on a.badge_seq = c.seq
+        where id = #{id}
+            and pw = password(#{pw})
+            and a.delete_yn = 'N'
+            and a.block_yn = 'N'
+    </select>
+
+    <select id="selectNickname">
+        select nickname from rg_user
+        where nickname = #{name}
+    </select>
+
+    <select id="checkid">
+        select id from rg_user
+        where id = #{id}
+    </select>
+
+
+    <update id="updateUserLogin">
+        update rg_user
+        set last_login_at = #{nowTime}
+            ,updated_at = #{nowTime}
+        where id = #{id}
+            and pw = password(#{pw})
+            and delete_yn = 'N'
+            and block_yn = 'N'
+    </update>
+
+    <insert id="signUp">
+        insert into rg_user(id,pw,nickname,created_at,updated_at)
+        values (#{id},password(#{pw}),#{name},#{date},#{date})
+    </insert>
+    <update id="updateUserGold">
+        update rg_user
+        set gold = #{gold}, updated_at = #{updated_at}
+        where uid = #{uid}
+    </update>
+    <update id="updateUserBadge">
+        update rg_user
+        set badge_seq = #{badge_seq}, updated_at = #{updated_at}
+        where uid = #{uid}
+    </update>
+</mapper>
