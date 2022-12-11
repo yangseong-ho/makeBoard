@@ -15,7 +15,7 @@
         "core-js": "^3.2.1",
         "date-utils": "^1.2.21",
         "ejs": "~2.4.1",
-        "express": "^4.17.1",
+        "express": "^4.17.3",
         "express-session": "^1.16.2",
         "mybatis-mapper": "^0.6.3",
         "mysql": "~2.17.1",
